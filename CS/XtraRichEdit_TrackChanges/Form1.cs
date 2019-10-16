@@ -23,8 +23,21 @@ namespace XtraRichEdit_TrackChanges
             richEditControl1.TrackedMovesConflict += DocumentProcessor_TrackedMovesConflict;
             richEditControl1.Document.SaveDocument("DocumentWithRevisions.docx", DocumentFormat.OpenXml);
             SpecifyDisplayOptions();
-
+            CreateNewRevision();
             AcceptAndRejectRevisions();
+        }
+
+        private void CreateNewRevision()
+        {
+            richEditControl1.Document.TrackChanges.Enabled = true;
+            richEditControl1.Document.TrackChanges.TrackFormatting = true;
+            //Format the specific phrase in the document:
+            //This modification is added an a new revision:
+            DocumentRange[] targetPhrases = richEditControl1.Document.FindAll("We measured hard disk space as a function of USB key space on an IBM PC Junior.", SearchOptions.None);
+            CharacterProperties characterProperties = richEditControl1.Document.BeginUpdateCharacters(targetPhrases[0]);
+            characterProperties.FontName = "Arial";
+            characterProperties.Italic = true;
+            richEditControl1.Document.EndUpdateCharacters(characterProperties);
         }
 
         private void AcceptAndRejectRevisions()

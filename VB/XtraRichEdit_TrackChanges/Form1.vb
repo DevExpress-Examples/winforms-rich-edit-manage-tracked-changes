@@ -22,8 +22,20 @@ Namespace XtraRichEdit_TrackChanges
 			AddHandler richEditControl1.TrackedMovesConflict, AddressOf DocumentProcessor_TrackedMovesConflict
 			richEditControl1.Document.SaveDocument("DocumentWithRevisions.docx", DocumentFormat.OpenXml)
 			SpecifyDisplayOptions()
-
+			CreateNewRevision()
 			AcceptAndRejectRevisions()
+		End Sub
+
+		Private Sub CreateNewRevision()
+			richEditControl1.Document.TrackChanges.Enabled = True
+			richEditControl1.Document.TrackChanges.TrackFormatting = True
+			'Format the specific phrase in the document:
+			'This modification is added an a new revision:
+			Dim targetPhrases() As DocumentRange = richEditControl1.Document.FindAll("We measured hard disk space as a function of USB key space on an IBM PC Junior.", SearchOptions.None)
+			Dim characterProperties As CharacterProperties = richEditControl1.Document.BeginUpdateCharacters(targetPhrases(0))
+			characterProperties.FontName = "Arial"
+			characterProperties.Italic = True
+			richEditControl1.Document.EndUpdateCharacters(characterProperties)
 		End Sub
 
 		Private Sub AcceptAndRejectRevisions()
